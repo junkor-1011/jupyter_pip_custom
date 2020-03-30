@@ -1,0 +1,89 @@
+# ref: https://pip.pypa.io/en/latest/reference/pip_install/#example-requirements-file
+
+###### Requirements without Version Specifiers ######
+#bhtsne
+#beautifulsoup4
+bokeh
+#Boruta
+#Cartopy
+#catboost
+Cython
+dask
+fastparquet
+#featuretools
+findspark
+folium
+geopandas
+geopy
+geoviews
+graphframes
+h5py
+holoviews
+#hyperopt==0.2.2
+#imbalanced-learn
+ipyleaflet
+ipympl
+ipyparallel
+ipython
+ipywidgets
+jedi
+joblib
+jupyter
+jupyterlab
+lightgbm
+matplotlib
+mca
+memory-profiler
+metakernel
+networkx
+notebook
+numba
+numexpr
+numpy
+optuna
+#osmnx
+Pillow
+py-d3
+#pycurl
+pydotplus
+#pyproj
+#python-igraph
+pytz
+scikit-learn
+scipy
+seaborn
+#selenium==3.141.0
+Shapely
+smopy
+#somoclu
+#SQLAlchemy
+#statsmodels
+#swifter
+#sympy
+#tables
+#tblib
+#tensorboard
+#tensorflow
+#tensorflow-datasets
+umap-learn
+watermark
+#widgetsnbextension
+#xarray
+dask
+
+#
+###### Requirements with Version Specifiers ######
+#   See https://www.python.org/dev/peps/pep-0440/#version-specifiers
+GDAL==2.4.*
+pandas==1.0.*
+pyarrow==0.16.*
+#
+###### Refer to other requirements files ######
+#
+#
+###### A particular file ######
+
+###### Additional Requirements without Version Specifiers ######
+#   Same as 1st section, just here to show that you can put things in any order.
+#
+
