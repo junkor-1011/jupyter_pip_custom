@@ -3,6 +3,6 @@ bhtsne
 somoclu
 tensorboard
 tensorflow
-tensorflow-datasets
+#tensorflow-datasets
 
 

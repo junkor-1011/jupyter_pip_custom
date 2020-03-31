@@ -8,7 +8,6 @@ boto3
 Cartopy
 catboost
 Cython
-dask
 fastparquet
 featuretools
 findspark
@@ -16,7 +15,7 @@ folium
 geoalchemy2
 geopandas
 geopy
-geoviews
+#geoviews   # 途中で落ちる
 graphframes
 h5py
 holoviews
@@ -46,10 +45,9 @@ osmnx
 Pillow
 psycopg2
 py-d3
-#pycurl
 pydotplus
-#pyproj
 python-igraph
+#python-snappy  # <= 追加でライブラリを入れないといけなさそうな感じ # 一方でpip install snappyもややこしい問題がありそう
 pytz
 scikit-learn
 scipy
@@ -60,16 +58,13 @@ smopy
 #SQLAlchemy
 statsmodels
 swifter
-#sympy
-#tables
-#tblib
 umap-learn
 watermark
 #widgetsnbextension
 xarray
 xgboost
-dask[colmplete]
-dask-ml
+#dask[complete]     # pipでの
+#dask-ml
 
 #
 ###### Requirements with Version Specifiers ######

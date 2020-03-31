@@ -70,6 +70,13 @@ RUN curl -O http://apache.mirror.iphh.net/spark/spark-${SPARK_VERSION}/spark-${S
     && mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} /usr/local/spark \
     && rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
 
+# nodejs
+ENV NODEJS=node-v12.16.1-linux-x64
+RUN wget https://nodejs.org/dist/v12.16.1/${NODEJS}.tar.xz \
+    && tar Jxvf ${NODEJS}.tar.xz \
+    && mv ${NODEJS} /usr/local/nodejs \
+    && rm ${NODEJS}.tar.xz
+#ENV PATH=$PATH:~/.nodejs/bin
 
 
 # user        
@@ -103,11 +110,12 @@ RUN ${PYTHON} -m pip install --user --upgrade pip setuptools && \
 # py4j=0.10.7 pipでは入れていないので後で考えるかも
 # ref: https://hub.docker.com/r/jupyter/pyspark-notebook/dockerfile
 ARG PY4J_VER=0.10.7
-ENV SPARK_HOME=/usr/local/spark
+ENV SPARK_HOME=/usr/local/spark \
+    NODEJS_HOME=/usr/local/nodejs
 ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64 \
     PYTHONPATH=${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-${PY4J_VER}-src.zip \
     SPARK_OPTS="--driver-java-options=-Xms1024M --driver-java-options=-Xmx4096M --driver-java-options=-Dlog4j.logLevel=info" \
-    PATH=$PATH:${SPARK_HOME}/bin \
+    PATH=$PATH:${SPARK_HOME}/bin:${NODEJS_HOME}/bin \
     PYSPARK_PYTHON=/usr/bin/${PYTHON} \
     PYSPARK_DRIVER=${PYTHON}
 #RUN alias python=/usr/bin/${PYTHON}
@@ -121,8 +129,10 @@ ENV PATH=$PATH:~/.bin
 
 
 # add jar
-RUN /usr/local/spark/bin/pyspark --packages graphframes:graphframes:0.7.0-spark2.4-s_2.11 && \
-    /usr/local/spark/bin/pyspark --packages org.postgresql:postgresql:jar:42.1.4
+#RUN /usr/local/spark/bin/pyspark --packages graphframes:graphframes:0.7.0-spark2.4-s_2.11 && \
+#    /usr/local/spark/bin/pyspark --packages org.postgresql:postgresql:jar:42.1.4
+RUN ${SPARK_HOME}/bin/pyspark --packages graphframes:graphframes:0.7.0-spark2.4-s_2.11
+RUN ${SPARK_HOME}/bin/pyspark --packages org.postgresql:postgresql:jar:42.1.4
 
 # todo unzip入れる
 # FONT
@@ -137,10 +147,10 @@ RUN wget https://ipafont.ipa.go.jp/IPAexfont/ipaexg00401.zip \
     && fc-cache -fv
 
 # jupyter lab
-# condaから入れる or 直接公式からダウンロードしたものでないと受け付けないらしい
-#RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
-#RUN jupyter labextension install jupyter-matplotlib
-#RUN jupyter labextension install @lckr/jupyterlab_variableinspector
+# nodejsに関して、condaから入れる or 直接公式からダウンロードしたものでないと受け付けないらしい
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
+RUN jupyter labextension install jupyter-matplotlib
+RUN jupyter labextension install @lckr/jupyterlab_variableinspector
 
 CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--NotebookApp.token=''"]
 

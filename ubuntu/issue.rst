@@ -14,7 +14,9 @@ Problem
 
 - ``geoviews``
     - (snappy error may occur)
-- ``%matplotlib notebook``
+- adding jar files
+    - ``graphframes``
+    - ``jdbc(postgresql)``
 
 ToDo
 =====
@@ -24,3 +26,4 @@ ToDo
     - geckodriver
 - nodejs
     - for jupyterlab
+
