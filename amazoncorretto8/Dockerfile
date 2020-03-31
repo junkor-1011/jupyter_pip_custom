@@ -56,9 +56,9 @@ RUN yum install -y \
 # https://tech.godpress.net/?p=569
 # https://dev.classmethod.jp/articles/amazon-linux-2-enable-epel-repository-with-amazon-linux-extras/
 RUN amazon-linux-extras install -y epel && \        
-    yum install -y \
-    proj-devel \
-    gdal-devel \
+    yum install -y --skip-broken \
+    https://www.rpmfind.net/linux/fedora/linux/releases/31/Everything/x86_64/os/Packages/g/gdal-devel-2.3.2-10.fc31.x86_64.rpm \
+    https://www.rpmfind.net/linux/fedora/linux/updates/30/Everything/x86_64/Packages/p/proj-5.2.0-2.fc30.x86_64.rpm \
     && yum clean all \
     && rm -rf /var/cache/yum
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal \
