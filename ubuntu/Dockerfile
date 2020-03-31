@@ -25,8 +25,11 @@ RUN apt-get clean && \
     libpcre3 libpcre3-dev \
     zlib1g zlib1g-dev \
     openssl libssl-dev \
+    ca-certificates \
+    bash \
     curl \
     wget \
+    bzip2 \
     gnupg \
     swig \
     vim \
@@ -37,6 +40,10 @@ RUN apt-get clean && \
     xz-utils \
     tk-dev \
     unzip \
+    sudo \
+    locales \
+    fonts-liberation \
+    run-one \
     software-properties-common \
     libbz2-dev \
     libreadline-dev \
@@ -60,6 +67,9 @@ ENV CPLUS_INCLUDE_PATH=/usr/include/gdal \
 # pyarrowでorcを扱う必要がある場合、ここで色々インストールしないといけないかもしれない
 #   parquetだけなら以下は不要なはず
 # https://arrow.apache.org/install/
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*    
+ENV SHELL=/bin/bash
 
 # SPARK    
 # https://qiita.com/hrkt/items/fe9b1162f7a08a07e812
@@ -86,7 +96,18 @@ RUN wget https://nodejs.org/dist/v12.16.1/${NODEJS}.tar.xz \
 # 一般ユーザーアカウントを追加
 ARG USER_NAME=user
 ARG USER_UID=1000
-RUN useradd -m -u ${USER_UID} ${USER_NAME}
+ARG PASSWD=password
+#RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
+#    sed -i.bak -e 's/^%admin/#%admin/' /etc/sudoers && \
+#    sed -i.bak -e 's/^%sudo/#%sudo/' /etc/sudoers && \
+#    useradd -m -s /bin/bash -N -u ${USER_UID} ${USER_NAME} && \
+#    gpasswd -a ${USER_UID} sudo
+RUN useradd -m -s /bin/bash -u ${USER_UID} ${USER_NAME} && \
+    gpasswd -a ${USER_NAME} sudo && \
+    echo "${USER_NAME}:${PASSWD}" | chpasswd && \
+    echo "${USER_NAME} ALL=(ALL) ALL" >> /etc/sudoers
+
+#RUN useradd -m -u ${USER_UID} ${USER_NAME}
 # 一般ユーザーにsudo権限を付与
 #RUN gpasswd -a ${UID} sudo
 
@@ -152,5 +173,6 @@ RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
 RUN jupyter labextension install jupyter-matplotlib
 RUN jupyter labextension install @lckr/jupyterlab_variableinspector
 
+EXPOSE 8888
 CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--NotebookApp.token=''"]
 
