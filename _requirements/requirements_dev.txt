@@ -1,18 +1,19 @@
 # ref: https://pip.pypa.io/en/latest/reference/pip_install/#example-requirements-file
 
 ###### Requirements without Version Specifiers ######
-#bhtsne
-#beautifulsoup4
+beautifulsoup4
 bokeh
-#Boruta
-#Cartopy
-#catboost
+Boruta
+boto3
+Cartopy
+catboost
 Cython
 dask
 fastparquet
-#featuretools
+featuretools
 findspark
 folium
+geoalchemy2
 geopandas
 geopy
 geoviews
@@ -20,8 +21,8 @@ graphframes
 h5py
 holoviews
 #hyperopt==0.2.2
-#imbalanced-learn
-ipyleaflet
+imbalanced-learn
+#ipyleaflet
 ipympl
 ipyparallel
 ipython
@@ -41,35 +42,34 @@ numba
 numexpr
 numpy
 optuna
-#osmnx
+osmnx
 Pillow
+psycopg2
 py-d3
 #pycurl
 pydotplus
 #pyproj
-#python-igraph
+python-igraph
 pytz
 scikit-learn
 scipy
 seaborn
-#selenium==3.141.0
+#selenium   # condaを使わない場合、firefoxとgeckodriverのインストールが若干面倒くさい
 Shapely
 smopy
-#somoclu
 #SQLAlchemy
-#statsmodels
-#swifter
+statsmodels
+swifter
 #sympy
 #tables
 #tblib
-#tensorboard
-#tensorflow
-#tensorflow-datasets
 umap-learn
 watermark
 #widgetsnbextension
-#xarray
-dask
+xarray
+xgboost
+dask[colmplete]
+dask-ml
 
 #
 ###### Requirements with Version Specifiers ######
@@ -77,6 +77,7 @@ dask
 GDAL==2.4.*
 pandas==1.0.*
 pyarrow==0.16.*
+fsspec>=0.3.3
 #
 ###### Refer to other requirements files ######
 #

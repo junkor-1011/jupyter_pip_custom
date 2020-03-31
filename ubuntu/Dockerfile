@@ -9,7 +9,8 @@ ARG BASE_IMAGE=ubuntu:18.04
 FROM ${BASE_IMAGE}
 
 # designate using-python
-ARG PYTHON_VER=3.8
+# 3.8はpysparkに対応していない様子
+ARG PYTHON_VER=3.7
 ENV PYTHON=python${PYTHON_VER}
 # python3.8はdebianではまだデフォルトではそのままapt-get出来ない様子
 
@@ -36,7 +37,6 @@ RUN apt-get clean && \
     xz-utils \
     tk-dev \
     unzip \
-    nodejs \
     software-properties-common \
     libbz2-dev \
     libreadline-dev \
@@ -45,8 +45,7 @@ RUN apt-get clean && \
     libncursesw5-dev \
     libffi-dev \
     liblzma-dev \
-    libspatialindex-dev \
-    && apt-get install -y npm
+    libspatialindex-dev
 
 # gdal    
 RUN add-apt-repository ppa:ubuntugis/ppa \
@@ -57,6 +56,10 @@ RUN add-apt-repository ppa:ubuntugis/ppa \
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal \
     C_INCLUDE_PATH=/usr/include/gdal    
 # todo: 要不要の選別など
+
+# pyarrowでorcを扱う必要がある場合、ここで色々インストールしないといけないかもしれない
+#   parquetだけなら以下は不要なはず
+# https://arrow.apache.org/install/
 
 # SPARK    
 # https://qiita.com/hrkt/items/fe9b1162f7a08a07e812
@@ -82,6 +85,7 @@ RUN useradd -m -u ${USER_UID} ${USER_NAME}
 
 
 COPY ./requirements.txt /tmp/requirements.txt
+COPY ./requirements2.txt /tmp/requirements2.txt
 COPY ./constraints.txt /tmp/constraints.txt
 
 USER ${USER_UID}
@@ -91,27 +95,29 @@ USER ${USER_UID}
 # https://qiita.com/zakuro9715/items/68c8d8c6b1b05f91fa2e
 ENV PATH=$PATH:/home/${USER_NAME}/.local/bin
 RUN ${PYTHON} -m pip install --user --upgrade pip setuptools && \
-    ${PYTHON} -m pip install -r /tmp/requirements.txt -c /tmp/constraints.txt --user
+    ${PYTHON} -m pip install --user -r /tmp/requirements.txt -c /tmp/constraints.txt && \
+    ${PYTHON} -m pip install --user -r /tmp/requirements2.txt -c /tmp/constraints.txt
 # TMP <= pysparkとpy4jのpathがうまく通らない <= もうまくいかない
 #RUN ${PYTHON} -m pip install --user py4j==0.10.7 pyspark==${SPARK_VERSION}
 # ENV
 # py4j=0.10.7 pipでは入れていないので後で考えるかも
 # ref: https://hub.docker.com/r/jupyter/pyspark-notebook/dockerfile
-ENV SPARK_HOME=/usr/local/spark \
-    JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64 \
-    PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.10.7-src.zip \
+ARG PY4J_VER=0.10.7
+ENV SPARK_HOME=/usr/local/spark
+ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64 \
+    PYTHONPATH=${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-${PY4J_VER}-src.zip \
     SPARK_OPTS="--driver-java-options=-Xms1024M --driver-java-options=-Xmx4096M --driver-java-options=-Dlog4j.logLevel=info" \
-    PATH=$PATH:/usr/local/spark/bin \
+    PATH=$PATH:${SPARK_HOME}/bin \
     PYSPARK_PYTHON=/usr/bin/${PYTHON} \
     PYSPARK_DRIVER=${PYTHON}
 #RUN alias python=/usr/bin/${PYTHON}
 
 WORKDIR /home/${USER_NAME}
-RUN mkdir ~/bin \
-    && chown ${USER_NAME}:${USER_NAME} ~/bin \
-    && chmod 755 ~/bin \
-    && ln -s /usr/bin/${PYTHON} ~/bin/python
-ENV PATH=$PATH:~/bin
+RUN mkdir ~/.bin \
+    && chown ${USER_NAME}:${USER_NAME} ~/.bin \
+    && chmod 755 ~/.bin \
+    && ln -s /usr/bin/${PYTHON} ~/.bin/python
+ENV PATH=$PATH:~/.bin
 
 
 # add jar

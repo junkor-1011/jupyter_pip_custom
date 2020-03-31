@@ -11,7 +11,7 @@ tar -czh . | docker build \
         -t jupyter_pip_custom_ubuntu \
         --build-arg BASE_IMAGE=ubuntu:18.04 \
         --build-arg USER_UID=1000 \
-        --build-arg PYTHON_VER=3.8 \
+        --build-arg PYTHON_VER=3.7 \
         --build-arg SPARK_VERSION=2.4.5 \
         --build-arg HADOOP_VERSION=2.7 \
         --build-arg USER_NAME=user \
