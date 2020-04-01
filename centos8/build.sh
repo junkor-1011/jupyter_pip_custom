@@ -8,7 +8,11 @@ cd $SCRIPT_DIR
 # symbolicの実体を辿ってimageをbuild
 # ref: https://blog.kkty.jp/entry/2019/06/16/214951
 tar -czh . | docker build \
-        -t app_flask_test_centos8 \
+        -t jupyter_pip_custom_centos8 \
         --build-arg BASE_IMAGE=centos:8 \
+        --build-arg USER_NAME=user \
         --build-arg USER_UID=1000 \
+        --build-arg PASSWD=awesome \
+        --build-arg SPARK_VERSION=2.4.5 \
+        --build-arg HADOOP_VERSION=2.7 \
         - 

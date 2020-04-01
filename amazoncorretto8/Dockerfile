@@ -46,8 +46,8 @@ RUN yum install -y \
         libncursesw5-devel \
         libffi-devel \
         liblzma-devel \
-        libspatialindex-devel \
-        && yum clean all
+        libspatialindex-devel
+#        && yum clean all
 # Note: centos系だとyumで簡単にインストール出来るのはpython3.6までの様子
 
 
@@ -55,12 +55,19 @@ RUN yum install -y \
 # gdal    
 # https://tech.godpress.net/?p=569
 # https://dev.classmethod.jp/articles/amazon-linux-2-enable-epel-repository-with-amazon-linux-extras/
+#RUN amazon-linux-extras install -y epel && \        
+#    yum install -y --skip-broken \
+#    https://www.rpmfind.net/linux/fedora/linux/releases/31/Everything/x86_64/os/Packages/g/gdal-devel-2.3.2-10.fc31.x86_64.rpm \
+#    https://www.rpmfind.net/linux/fedora/linux/updates/30/Everything/x86_64/Packages/p/proj-5.2.0-2.fc30.x86_64.rpm \
+#    && yum clean all \
+#    && rm -rf /var/cache/yum
+
+# https://centos.pkgs.org/7/postgresql-11-x86_64/pgdg-centos11-11-2.noarch.rpm.html
+
 RUN amazon-linux-extras install -y epel && \        
-    yum install -y --skip-broken \
-    https://www.rpmfind.net/linux/fedora/linux/releases/31/Everything/x86_64/os/Packages/g/gdal-devel-2.3.2-10.fc31.x86_64.rpm \
-    https://www.rpmfind.net/linux/fedora/linux/updates/30/Everything/x86_64/Packages/p/proj-5.2.0-2.fc30.x86_64.rpm \
-    && yum clean all \
-    && rm -rf /var/cache/yum
+    yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
+    yum install -y yum install pgdg-redhat-repo && \
+    yum install -y gdal23-devel proj49-devel geos-devel
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal \
     C_INCLUDE_PATH=/usr/include/gdal    
 ## ISSUE: gdal, projのバージョンが古く、以降のビルドで問題が出る <= makeしないといけない?
